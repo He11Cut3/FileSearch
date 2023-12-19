@@ -27,11 +27,11 @@ public class ProgramTests : IDisposable
     }
 
     [Fact]
-    public void SearchTextInFiles_WhenSearchStringFoundInExcel_ShouldAddToResultLines()
+    public void SearchTextInFiles_WhenSearchStringFoundInExcel_ShouldAddToResultLines()//Проверка на поиск фразы в Excel файле.
     {
         // Arrange
         var directoryPath = Path.Combine(testDirectory, "TestData");
-        var searchString = "ExselTest";
+        var searchString = "ExcelTest";
         var resultLines = new List<string>();
 
         // Создаем файл Excel с тестовыми данными
@@ -39,7 +39,7 @@ public class ProgramTests : IDisposable
         using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
         {
             var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-            worksheet.Cells["A1"].Value = "ExselTest";
+            worksheet.Cells["A1"].Value = "ExcelTest";
 
             package.Save();
         }
@@ -53,7 +53,7 @@ public class ProgramTests : IDisposable
     }
 
     [Fact]
-    public void SearchTextInFiles_WhenSearchStringFoundInTxt_ShouldAddToResultLines()
+    public void SearchTextInFiles_WhenSearchStringFoundInTxt_ShouldAddToResultLines()//Проверка на поиск фразы в Txt файле.
     {
         // Arrange
         var directoryPath = Path.Combine(testDirectory, "TestData");
@@ -73,7 +73,7 @@ public class ProgramTests : IDisposable
     }
 
     [Fact]
-    public void SearchTextInFiles_WhenSearchStringFoundInWord_ShouldAddToResultLines()//Проверка на 
+    public void SearchTextInFiles_WhenSearchStringFoundInWord_ShouldAddToResultLines()//Проверка на поиск фразы в Word файле.
     {
         // Arrange
         var directoryPath = Path.Combine(testDirectory, "TestData");
