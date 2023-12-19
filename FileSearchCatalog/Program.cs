@@ -1,11 +1,17 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.XWPF.UserModel;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
-
+using Xceed.Document.NET;
 public class Program
 {
     public static void Main()
     {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        Console.WriteLine("Поддерживает файлы, форматов - docx, xlsx и txt.");
         Console.Write("Введите путь: ");
         string directoryPath = Console.ReadLine(); // Ввод пути.
 
@@ -37,20 +43,92 @@ public class Program
         }
     }
 
-    public static void SearchTextInFiles(string directoryPath, string searchString, List<string> resultLines)
+    public static void SearchTextInFiles(string directoryPath,  string searchString, List<string> resultLines)
     {
-        foreach (string filePath in Directory.EnumerateFiles(directoryPath, "*.txt", SearchOption.AllDirectories)) // Поиск пути ко всем файлам в каталоге и его подкаталогах.
+        foreach (string filePath in Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.AllDirectories)) // Поиск пути ко всем файлам в каталоге и его подкаталогах.
         {
-            int lineNumber = 0;
-            foreach (string line in File.ReadLines(filePath)) // После поиска файла в каталогах - чтение файла.
+            if (filePath.EndsWith(".txt")) //Проверка на файл - .txt
             {
-                lineNumber++; // Подсчёт строк.
-                if (line.Contains(searchString)) // Содержит ли в себе строку, которую изначально искали?
+                SearchInTxtFile(filePath, directoryPath, searchString, resultLines); //Функция - Txt
+            }
+            else if (filePath.EndsWith(".xlsx"))//Проверка на файл - .xlsx
+            {
+                SearchInExcelFile(filePath, directoryPath, searchString, resultLines); //Функция - Excel
+            }
+            else if (filePath.EndsWith(".docx"))//Проверка на файл - .docx
+            {
+                SearchInWordFile(filePath, directoryPath, searchString, resultLines); //Функция - Word
+            }
+        }
+    }
+
+    public static void SearchInTxtFile(string filePath, string directoryPath, string searchString, List<string> resultLines)
+    {
+        int lineNumber = 0;
+        foreach (string line in File.ReadLines(filePath)) // После поиска файла в каталогах - чтение файла.
+        {
+            lineNumber++; // Подсчёт строк.
+            if (line.Contains(searchString)) // Содержит ли в себе строку, которую изначально искали?
+            {
+                string result = $"{GetRelativePath(directoryPath, filePath)}({lineNumber}): {line}";
+                resultLines.Add(result); // Если да, то записывает в результат данную строку.
+            }
+        }
+    }
+
+    public static void SearchInExcelFile(string filePath,string directoryPath, string searchString, List<string> resultLines)
+    {
+        try
+        {
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                foreach (ExcelWorksheet worksheet in package.Workbook.Worksheets)
                 {
-                    string result = $"{GetRelativePath(directoryPath, filePath)}({lineNumber}): {line}"; 
-                    resultLines.Add(result); // Если да, то записывает в результат данную строку.
+                    for (int row = 1; row <= worksheet.Dimension.Rows; row++) // Два цикоа для проверки стобцов и строк в таблице.
+                    {
+                        for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+                        {
+                            string cellValue = worksheet.Cells[row, col].Text;
+                            if (cellValue.Contains(searchString)) //Если содержит в себе нужную строку - записываем в файл.
+                            {
+                                string result = $"{GetRelativePath(directoryPath, filePath)}({row}, {col}): {cellValue}";
+                                resultLines.Add(result);
+                            }
+                        }
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка чтения Excel файла '{filePath}': {ex.Message}"); //Проверка на загрузку файла
+        }
+    }
+
+    public static void SearchInWordFile(string filePath, string directoryPath, string searchString, List<string> resultLines)
+    {
+        try //Всё тоже самое, но с Word файлом. Только вместо столбцов - раздел.
+        {
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                XWPFDocument document = new XWPFDocument(fileStream);
+
+                int paragraphNumber = 0;
+                foreach (var paragraph in document.Paragraphs)
+                {
+                    paragraphNumber++;
+
+                    if (paragraph.Text.Contains(searchString))
+                    {
+                        string result = $"{GetRelativePath(directoryPath, filePath)}(Раздел: {paragraphNumber}): {paragraph.Text}";
+                        resultLines.Add(result);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка чтения Word файла '{filePath}': {ex.Message}"); //Проверка на загрузку файла.
         }
     }
 

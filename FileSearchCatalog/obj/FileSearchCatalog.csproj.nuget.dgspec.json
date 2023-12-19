@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\File\\FileSearchCatalog\\FileSearchCatalog.csproj": {}
+    "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\01\\Git\\FileSearch\\FileSearchCatalog\\FileSearchCatalog.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\File\\FileSearchCatalog\\FileSearchCatalog.csproj": {
+    "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\01\\Git\\FileSearch\\FileSearchCatalog\\FileSearchCatalog.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\File\\FileSearchCatalog\\FileSearchCatalog.csproj",
+        "projectUniqueName": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\01\\Git\\FileSearch\\FileSearchCatalog\\FileSearchCatalog.csproj",
         "projectName": "FileSearchCatalog",
-        "projectPath": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\File\\FileSearchCatalog\\FileSearchCatalog.csproj",
+        "projectPath": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\01\\Git\\FileSearch\\FileSearchCatalog\\FileSearchCatalog.csproj",
         "packagesPath": "C:\\Users\\kek13\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\File\\FileSearchCatalog\\obj\\",
+        "outputPath": "C:\\Users\\kek13\\OneDrive\\Рабочий стол\\01\\Git\\FileSearch\\FileSearchCatalog\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kek13\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,20 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "DocX": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.0.4, )"
+            },
+            "NPOI": {
+              "target": "Package",
+              "version": "[2.6.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

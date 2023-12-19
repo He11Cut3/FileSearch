@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using Xceed.Words.NET;
 using Xunit;
 
 public class ProgramTests : IDisposable
@@ -25,16 +27,66 @@ public class ProgramTests : IDisposable
     }
 
     [Fact]
-    public void SearchTextInFiles_ShouldFindMatchingLines() //Проверка корректности поиска строки в файлах.
+    public void SearchTextInFiles_WhenSearchStringFoundInExcel_ShouldAddToResultLines()
     {
         // Arrange
-        var directoryPath = testDataDirectory;
-        var searchString = "SearchString";
+        var directoryPath = Path.Combine(testDirectory, "TestData");
+        var searchString = "ExselTest";
         var resultLines = new List<string>();
 
-        // Создаем файл с тестовыми данными
-        var testFilePath = Path.Combine(directoryPath, "TestFile.txt");
-        File.WriteAllText(testFilePath, "'Это строка с SearchString.");
+        // Создаем файл Excel с тестовыми данными
+        var excelFilePath = Path.Combine(directoryPath, "TestExcelFile.xlsx");
+        using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
+        {
+            var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+            worksheet.Cells["A1"].Value = "ExselTest";
+
+            package.Save();
+        }
+
+        // Act
+        Program.SearchTextInFiles(directoryPath, searchString, resultLines);
+
+        // Assert
+        Assert.NotEmpty(resultLines);
+        Assert.All(resultLines, line => Assert.Contains(searchString, line));
+    }
+
+    [Fact]
+    public void SearchTextInFiles_WhenSearchStringFoundInTxt_ShouldAddToResultLines()
+    {
+        // Arrange
+        var directoryPath = Path.Combine(testDirectory, "TestData");
+        var searchString = "TxtTest";
+        var resultLines = new List<string>();
+
+        // Создаем файл TXT с тестовыми данными
+        var txtFilePath = Path.Combine(directoryPath, "TestTxtFile.txt");
+        File.WriteAllText(txtFilePath, "TxtTest");
+
+        // Act
+        Program.SearchTextInFiles(directoryPath, searchString, resultLines);
+
+        // Assert
+        Assert.NotEmpty(resultLines);
+        Assert.All(resultLines, line => Assert.Contains(searchString, line));
+    }
+
+    [Fact]
+    public void SearchTextInFiles_WhenSearchStringFoundInWord_ShouldAddToResultLines()//Проверка на 
+    {
+        // Arrange
+        var directoryPath = Path.Combine(testDirectory, "TestData");
+        var searchString = "WordTest";
+        var resultLines = new List<string>();
+
+        // Создаем файл Word с тестовыми данными
+        var wordFilePath = Path.Combine(directoryPath, "TestWordFile.docx");
+        using (var document = DocX.Create(wordFilePath))
+        {
+            document.InsertParagraph("WordTest");
+            document.Save();
+        }
 
         // Act
         Program.SearchTextInFiles(directoryPath, searchString, resultLines);

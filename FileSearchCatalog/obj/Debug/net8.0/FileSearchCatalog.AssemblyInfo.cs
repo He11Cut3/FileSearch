@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FileSearchCatalog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+35af4bd2e35f639d335e701fe41a83eaf882c779")]
 [assembly: System.Reflection.AssemblyProductAttribute("FileSearchCatalog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FileSearchCatalog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
